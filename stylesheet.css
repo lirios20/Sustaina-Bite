@@ -401,3 +401,99 @@
   height: auto;
   vertical-align: middle;
 }
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  h1, #h_1 {
+    font-size: 2.2rem;
+    margin-top: 100px;
+  }
+
+  h2, #h_2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 50px;
+    font-size: 1rem;
+  }
+
+  .square {
+    height: auto;
+    padding: 60px 20px;
+  }
+
+  .getapp {
+    margin-right: 0;
+    align-self: center;
+  }
+
+  .download-content {
+    flex-direction: column;
+  }
+
+  .logo img {
+    height: 50px;
+  }
+
+  .goodbarber-link img {
+    width: 200px;
+  }
+}
+
+/* Mobile (below 768px) */
+@media (max-width: 767px) {
+  h1, #h_1 {
+    font-size: 1.8rem;
+    margin-top: 80px;
+  }
+
+  h2, #h_2 {
+    font-size: 1.3rem;
+  }
+
+  p {
+    margin: 0 20px;
+    font-size: 0.95rem;
+  }
+
+  .left-links,
+  .right-links {
+    display: none;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .content {
+    padding: 60px 20px;
+  }
+
+  .square {
+    padding: 30px 15px;
+  }
+
+  #phone {
+    height: 60vh;
+    max-height: 400px;
+  }
+
+  .app-preview {
+    max-width: 100%;
+  }
+
+  .getapp {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .download-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .goodbarber-link img {
+    width: 150px;
+  }
+}

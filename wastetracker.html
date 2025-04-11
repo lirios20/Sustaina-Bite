@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leftover Recipe Generator</title>
+    <link rel="stylesheet" href="stylesheet.css"> <script defer src="./script.js"></script> <link rel="icon" href="./apple-removebg-preview.png" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="footerstyles.css"> <style>
+        /* --- START: Embedded CSS for Recipe Generator (Modified for Specificity) --- */
+
+        /* Apply styles only inside the wrapper */
+        #recipe-generator-wrapper {
+        display: flex; /* Enable flexbox for the wrapper */
+        justify-content: center; /* Center content horizontally */
+        align-items: flex-start; /* Align items to the top of the wrapper initially */
+        min-height: 80vh; /* Ensure the wrapper takes up at least 80% of the viewport height */
+        padding-top: 10%; /* Add some top padding to prevent content from touching the very top */
+        /* You might have other background or layout styles for the wrapper here */
+    }
+        
+
+        #recipe-generator-wrapper .generator-container {
+            max-width: 700px;
+            padding: 25px;
+            background-color: rgb(243, 247, 244); /* Light green background */
+            border: 1px solid rgb(144,153,127);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            /* Remove any explicit top/bottom margins that might be interfering */
+            margin-top: 0;
+            margin-bottom: 10px; /* Add some bottom margin */}
+
+        /* --- Style Resets for Elements Inside Generator --- */
+
+        #recipe-generator-wrapper .generator-container h1 {
+             /* Override global H1 styles FROM stylesheet.css */
+            font-family: sans-serif !important; /* Reset font */
+            text-align: center;    /* Keep centered if desired */
+            margin-top: 0 !important;       /* Reset margin */
+            margin-bottom: 20px !important; /* Generator specific margin */
+            font-size: 1.8em !important;    /* Generator specific font size */
+            color: #5f625f;        /* Generator specific color */
+        }
+
+         #recipe-generator-wrapper #recipe-results h2 {
+             /* Override global H2 styles FROM stylesheet.css */
+             font-family: sans-serif !important; /* Reset font */
+             text-align: center;     /* Keep centered */
+             margin-top: 0 !important;        /* Reset margin */
+             margin-bottom: 15px !important; /* Generator specific margin */
+             font-size: 1.5em !important;     /* Generator specific font size */
+             color: rgb(144,153,127); /* Generator specific color */
+        }
+
+
+        #recipe-generator-wrapper .generator-container p {
+             /* Override global paragraph styles FROM stylesheet.css */
+            margin-left: 0 !important;  /* Reset the large margin */
+            margin-right: 0 !important; /* Reset the large margin */
+            text-align: left;  /* Reset text alignment (or 'center' if preferred) */
+            font-family: sans-serif !important; /* Reset font */
+            font-size: 1em !important;     /* Reset font size */
+            color: rgb(141,149,126); /* Keep generator color */
+            line-height: 1.5;      /* Keep generator line-height */
+            margin-bottom: 10px;   /* Keep generator margin-bottom */
+        }
+
+        /* Ensure EM tags inside paragraphs are styled correctly */
+        #recipe-generator-wrapper .generator-container p em {
+            font-size: 0.9em;
+            color: #555;
+            font-style: italic; /* Ensure italic */
+            /* Add other resets if needed */
+        }
+
+        /* Ensure time span inside paragraph is styled correctly */
+        #recipe-generator-wrapper .generator-container p#current-time {
+            font-style: italic;
+            color: #666;
+            display: block; /* Put time on its own line */
+            text-align: center; /* Center the time */
+            margin-bottom: 15px; /* Add space below time */
+             /* Reset font-family/size if needed from global p */
+             font-family: sans-serif !important;
+             font-size: 1em !important;
+        }
+
+
+        /* --- Original Generator Styles (now scoped) --- */
+
+        #recipe-generator-wrapper #ingredients-input {
+            width: 95%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            min-height: 60px;
+            box-sizing: border-box;
+        }
+
+        #recipe-generator-wrapper #generate-button {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 12px 25px;
+            background-color: rgb(141,149,126);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        #recipe-generator-wrapper #generate-button:hover {
+            background-color: rgb(228,214,197);
+        }
+
+        #recipe-generator-wrapper #recipe-results {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* H2 style for results already handled above */
+
+        #recipe-generator-wrapper .recipe-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        #recipe-generator-wrapper .recipe-card h3 {
+            margin-top: 0;
+            color: #1b5e20;
+            /* Reset font if needed */
+             font-family: sans-serif !important;
+             font-size: 1.3em !important; /* Adjust size as needed */
+             text-align: left !important; /* Override center if needed */
+        }
+
+        /* Paragraphs inside recipe cards */
+        #recipe-generator-wrapper .recipe-card p {
+            margin-bottom: 8px;
+             /* Reset font/margins if needed, inherit from .generator-container p is likely fine */
+             margin-left: 0 !important;
+             margin-right: 0 !important;
+             text-align: left !important;
+             font-family: sans-serif !important;
+             font-size: 1em !important;
+             color: #333 !important; /* Ensure default text color */
+        }
+        #recipe-generator-wrapper .recipe-card strong {
+         color: #333;
+        }
+
+        /* Reset list styles if global 'ul' style causes issues */
+        #recipe-generator-wrapper .recipe-card ul,
+        #recipe-generator-wrapper .recipe-card ol {
+            list-style: revert !important; /* Try to revert to browser default list styles */
+            margin: 10px 0 10px 0px !important; /* Reset margins */
+            padding: 0 0 0 25px !important;     /* Reset padding, keep left indent */
+        }
+         #recipe-generator-wrapper .recipe-card li {
+             margin-bottom: 5px;
+             line-height: 1.4;
+              /* Reset font/color if needed */
+             font-family: sans-serif !important;
+             font-size: 1em !important;
+             color: #333 !important;
+             text-align: left !important; /* Ensure list items are left-aligned */
+         }
+
+        /* Style for highlighting ingredients user might have */
+        #recipe-generator-wrapper .recipe-card .user-has {
+            color: #2e7d32; /* Dark green */
+            font-weight: bold;
+            background-color: #f0fff0; /* Very light green background */
+            padding: 1px 3px;
+            border-radius: 3px;
+            /* Ensure font style is not overridden */
+            font-style: normal !important;
+        }
+
+        /* Current time span already handled by the p#current-time rule */
+
+    </style>
+    </head>
+<body>
+    <header class="header header-scroll">
+        <div class="nav-links">
+             <ul class="left-links">
+                <li><a href="contact_us.html" class="link">Contact Us</a></li>
+                <li><a href="locations.html" class="link">Food Bank Locations</a></li>
+            </ul>
+             <div class="logo">
+                <a href="index.html" aria-label="Return to homepage">
+                    <img src="./pictures/apple-removebg-preview.png" alt="SustainaBite">
+                </a>
+            </div>
+                <ul class="right-links">
+                    <li><a href="resources.html" class="link">Resources</a></li>
+                </ul>
+            </div>
+    </header>
+
+    <div id="recipe-generator-wrapper">
+
+        <div class="container generator-container"> <h1>Leftover Recipe Generator</h1>
+            <p>Enter your leftover ingredients below (comma-separated) to find matching recipe ideas!</p>
+            <p><em>(Assumes basic pantry staples like oil, salt, pepper, basic spices.)</em></p>
+            <p id="current-time">Loading current time...</p>
+
+            <textarea id="ingredients-input" rows="4" placeholder="e.g., cooked rice, eggs, carrots, onion, soy sauce..."></textarea>
+            <button id="generate-button">Find Recipes</button>
+
+            <div id="recipe-results">
+                <h2>Recipe Suggestions:</h2>
+                <p>Enter ingredients above and click "Find Recipes".</p>
+            </div>
+
+
+
+
+        </div> </div>
+        
+        <footer class="footer-section">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h1 class="footer-title">SustainaBite</h1>
+                    <p class="footer-description">Saving food one meal at a time.</p>
+                </div>
+            
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Support</h3>
+                        <ul>
+                            <li><a href="./FAQ.html">FAQ</a></li>
+                            <li><a href="./attributions.html">Attributions</a></li>
+                            <li><a href="wastetracker.html">Waste Tracker</a></li>
+                        </ul>
+                    </div>
+            
+                    <div class="footer-links-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="./aboutus.html">About Us</a></li>
+                        </ul>
+                    </div>
+            
+                    <div class="footer-links-column">
+                        <h3>Social</h3>
+                        <ul class="social-links">
+                            <li><a href="#" target="_blank"><img src="pictures/facebook.png" alt="Facebook"></a></li>
+                            <li><a href="#" target="_blank"><img src="pictures/x.png" alt="Twitter"></a></li>
+                            <li><a href="#" target="_blank"><img src="pictures/instagram.png" alt="Instagram"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            
+                <div class="footer-legal">
+                    <p>&copy; 2025 SustainaBite. All rights reserved.</p>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+        
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ingredientsInput = document.getElementById('ingredients-input');
+            const generateButton = document.getElementById('generate-button');
+            const recipeResultsDiv = document.getElementById('recipe-results');
+            const currentTimeSpan = document.getElementById('current-time');
+
+            // --- Display Current Time ---
+            const now = new Date();
+            // Displaying time relevant to Stony Point, NY (Eastern Time)
+            // Current time is Thursday, April 10, 2025 at 9:32:51 PM EDT
+            currentTimeSpan.textContent = `Current time in Stony Point, NY: ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' })}`;
+
+
+            // --- PREDEFINED RECIPE DATABASE ---
+            const recipes = [
+                 {
+                    title: "Quick Fried Rice",
+                    leftoversNeeded: ["cooked rice", "egg", "soy sauce"],
+                    ingredients: ["cooked rice", "egg(s)", "soy sauce", "chopped vegetables (e.g., carrots, peas, onion)", "oil", "optional: cooked meat (e.g., chicken, shrimp)"],
+                    instructions: [ /* Instructions... */ ]
+                },
+                {
+                    title: "Simple Omelette / Scramble",
+                    leftoversNeeded: ["egg"],
+                    ingredients: ["egg(s)", "splash of milk or water", "salt", "pepper", "oil or butter", "optional fillings: cheese, chopped cooked vegetables, cooked meat"],
+                    instructions: [ /* Instructions... */ ]
+                },
+                 {
+                    title: "Leftover Veggie Pasta",
+                    leftoversNeeded: ["cooked pasta", "cooked vegetables"],
+                    ingredients: ["cooked pasta", "cooked vegetables (any kind!)", "olive oil or butter", "garlic (optional)", "salt", "pepper", "optional: cheese (e.g., parmesan), sauce (e.g., tomato sauce, pesto), protein (e.g., canned tuna, beans)"],
+                    instructions: [ /* Instructions... */ ]
+                },
+                {
+                    title: "Quick Quesadilla",
+                    leftoversNeeded: ["tortilla", "cheese"],
+                     ingredients: ["tortilla(s)", "shredded cheese", "optional fillings: cooked chicken/meat, beans, cooked vegetables, salsa"],
+                    instructions: [ /* Instructions... */ ]
+                },
+            ];
+            // Fill in instructions again (ensure these match your actual recipe data)
+            recipes[0].instructions = [
+                "Heat oil in a pan or wok over medium-high heat.", "Add chopped vegetables and cook until tender-crisp.", "Push vegetables to one side, crack egg(s) into the other side and scramble.", "Add cooked rice and any optional cooked meat. Stir everything together.", "Add soy sauce to taste and stir-fry for another 1-2 minutes until heated through.", "Serve immediately."];
+            recipes[1].instructions = [
+                "Whisk egg(s) with a splash of milk/water, salt, and pepper.", "Heat oil or butter in a non-stick skillet over medium heat.", "Pour in the egg mixture.", "As eggs set, gently lift edges and tilt pan (omelette) OR stir gently (scramble).", "Add optional fillings.", "Cook until eggs are set. Fold omelette if making.", "Serve immediately."];
+            recipes[2].instructions = [
+                "Heat olive oil or butter in a pan over medium heat.", "If using garlic, add and cook for 30 seconds.", "Add cooked vegetables and heat through.", "Add cooked pasta and stir.", "Add optional sauce/protein and heat through.", "Season with salt and pepper.", "Serve topped with cheese, if desired."];
+            recipes[3].instructions = [
+                "Heat a dry skillet over medium heat.", "Place a tortilla in the skillet.", "Sprinkle cheese over one half.", "Add optional fillings over the cheese.", "Fold the other half of the tortilla over.", "Cook 2-3 minutes per side until golden and melted.", "Slice and serve."];
+
+
+            // --- Event Listener ---
+            generateButton.addEventListener('click', findMatchingRecipes);
+
+            // --- Functions ---
+            function findMatchingRecipes() {
+                const userInput = ingredientsInput.value.toLowerCase().trim();
+                if (!userInput) {
+                    recipeResultsDiv.innerHTML = '<h2>Recipe Suggestions:</h2><p>Please enter some ingredients first!</p>';
+                    return;
+                }
+
+                const userIngredients = userInput.split(',').map(item => item.trim()).filter(item => item.length > 0);
+
+                // Filtering Logic
+                let matches = [];
+                recipes.forEach(recipe => {
+                    let matchCount = 0;
+                    recipe.leftoversNeeded.forEach(needed => {
+                        if (userIngredients.some(userItem => userItem.includes(needed))) {
+                            matchCount++;
+                        }
+                    });
+                    if (matchCount > 0) {
+                        matches.push(recipe);
+                    }
+                });
+
+                displayRecipes(matches, userIngredients);
+            }
+
+            function displayRecipes(foundRecipes, userIngredients) {
+                recipeResultsDiv.innerHTML = '<h2>Recipe Suggestions:</h2>';
+
+                if (foundRecipes.length === 0) {
+                    // Use a paragraph for the message for consistency
+                    const noMatchMsg = document.createElement('p');
+                    noMatchMsg.textContent = 'No specific recipe ideas found matching your ingredients in our list. Try listing fewer or different ingredients, or check basic cooking techniques!';
+                    recipeResultsDiv.appendChild(noMatchMsg);
+                    return;
+                }
+
+                foundRecipes.forEach(recipe => {
+                    const card = document.createElement('div');
+                    card.classList.add('recipe-card');
+
+                    let ingredientsHTML = '<ul>';
+                    recipe.ingredients.forEach(ing => {
+                         const userHas = userIngredients.some(userItem => {
+                            const coreIngredient = ing.split('(')[0].trim().toLowerCase();
+                            return userItem.includes(coreIngredient) || coreIngredient.includes(userItem);
+                         });
+                         if (userHas) {
+                            ingredientsHTML += `<li class="user-has">${ing} (You might have this!)</li>`;
+                         } else {
+                            ingredientsHTML += `<li>${ing}</li>`;
+                         }
+                    });
+                    ingredientsHTML += '</ul>';
+
+                    let instructionsHTML = '<ol>';
+                    recipe.instructions.forEach(step => {
+                        instructionsHTML += `<li>${step}</li>`;
+                    });
+                    instructionsHTML += '</ol>';
+
+                    card.innerHTML = `
+                        <h3>${recipe.title}</h3>
+                        <p><strong>Ingredients:</strong></p>
+                        ${ingredientsHTML}
+                        <p><strong>Instructions:</strong></p>
+                        ${instructionsHTML}
+                    `;
+                    recipeResultsDiv.appendChild(card);
+                });
+            }
+        }); // End DOMContentLoaded
+    </script>
+    </body>
+</html>
